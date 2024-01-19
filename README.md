@@ -1,1 +1,3 @@
-# Empty
+# Outputer
+
+Text output classes library
