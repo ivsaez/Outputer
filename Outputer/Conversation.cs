@@ -1,4 +1,6 @@
-﻿namespace Outputer
+﻿using Outputer.Extensions;
+
+namespace Outputer
 {
     public class Conversation : StringableList<ConversationLine>, IOutputable
     {
@@ -6,6 +8,16 @@
             : base()
         {
         }
+
+        public bool HasExclamation => elements.Any(e => e.IsExcalamation);
+
+        public bool HasQuestion => elements.Any(e => e.IsQuestion);
+
+        public IEnumerable<string> SpeakersScript => elements.Select(element => element.Speaker).ToList();
+
+        public ISet<string> Speakers => SpeakersScript.ToHashSet();
+
+        public string ProminentSpeaker => SpeakersScript.GetMoreFrequent();
 
         public void Add(string speaker, string message)
         {
@@ -73,6 +85,10 @@
 
         public string Speaker { get; }
         public string Message { get; }
+
+        public bool IsExcalamation => Message.Contains("¡") || Message.Contains("!");
+
+        public bool IsQuestion => Message.Contains("¿") || Message.Contains("?");
 
         public override string ToString() =>
             $"{Speaker}: - {Message}";
