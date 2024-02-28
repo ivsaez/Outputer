@@ -68,5 +68,23 @@ namespace Outputer
             AddIf(condition, output);
             return this;
         }
+
+        public static Output FromTexts(params string[] texts)
+        {
+            var pharagraphs = texts
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => new Pharagraph(x))
+                .ToArray();
+
+            return new Output(pharagraphs);
+        }
+
+        public static Output FromSpeech(string speaker, string message)
+        {
+            if (string.IsNullOrWhiteSpace(speaker) || string.IsNullOrWhiteSpace(message))
+                return new Output();
+
+            return new Output(new Conversation().With(speaker, message));
+        }
     }
 }
