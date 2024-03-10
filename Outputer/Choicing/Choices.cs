@@ -4,35 +4,35 @@ namespace Outputer.Choicing
 {
     public sealed class Choices
     {
-        private readonly Dictionary<int, string> options;
-        private readonly Dictionary<string, ChoiceFunction> actions;
+        private readonly List<Option> options;
+        private readonly ISet<int> addedOptions;
 
-        public IEnumerable<Option> Options =>
-            options
-                .Keys
-                .Select(key => new Option(key, options[key], actions[options[key]]));
+        public IEnumerable<IndexedOption> Options => 
+            options.Select((option, index) => IndexedOption.FromOption(index + 1, option));
 
         public Choices()
         {
-            options = new Dictionary<int, string>();
-            actions = new Dictionary<string, ChoiceFunction>();
+            options = new List<Option>();
+            addedOptions = new HashSet<int>();
         }
 
         public (int Min, int Max) Range => (1, options.Count);
 
         public bool IsEmpty => !options.Any();
 
-        public void Add(string option, ChoiceFunction function)
+        public void Add(string option, ChoiceFunction function, uint priority = 0)
         {
-            if (actions.ContainsKey(option))
+            if(string.IsNullOrWhiteSpace(option))
+                throw new ArgumentNullException(nameof(option));
+
+            var optionItem = new Option(option, function, priority);
+
+            if(addedOptions.Contains(optionItem.GetHashCode()))
                 throw new ArgumentException($"Option '{option}' already added.");
 
-            if (!string.IsNullOrWhiteSpace(option))
-            {
-                int index = options.Count + 1;
-                options.Add(index, option);
-                actions.Add(option, function);
-            }
+            options.Add(optionItem);
+
+            options.Sort();
         }
 
         public Choices With(string option, ChoiceFunction function)
@@ -41,12 +41,14 @@ namespace Outputer.Choicing
             return this;
         }
 
-        public Option Select(Input input)
+        public IndexedOption Select(Input input)
         {
-            if (!options.ContainsKey(input.ChoiceIndex))
-                return Option.Empty;
+            if (input.ChoiceIndex < Range.Min || input.ChoiceIndex > Range.Max)
+                return IndexedOption.Empty;
 
-            return new Option(input.ChoiceIndex, options[input.ChoiceIndex], actions[options[input.ChoiceIndex]]);
+            var option = options[input.ChoiceIndex - 1];
+
+            return IndexedOption.FromOption(input.ChoiceIndex, option);
         }
 
         public override string ToString()

@@ -1,31 +1,33 @@
 ﻿namespace Outputer.Choicing
 {
-    public class Option
+    public class Option : IComparable<Option>
     {
-        public Option(int index, string value, ChoiceFunction function)
+        public Option(string value, ChoiceFunction function, uint priority)
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(value));
 
-            Index = index;
             Value = value;
             Function = function;
+            Priority = priority;
         }
-
-        public int Index { get; }
+        
         public string Value { get; }
         public ChoiceFunction Function { get; }
+        public uint Priority { get; }
 
-        public bool IsEmpty => Index < 0;
+        public override int GetHashCode() =>
+            Value.GetHashCode();
 
-        public override string ToString() =>
-            IsEmpty
-                ? string.Empty
-                : $"{Index} - {Value}";
-
-        public static Option Empty => new Option(-1, "-", () =>
+        public int CompareTo(Option? other)
         {
-            return string.Empty;
-        });
+            if (other is null) return -1;
+
+            if(other.Priority == Priority) return 0;
+
+            if(other.Priority > Priority) return 1;
+
+            return -1;
+        }
     }
 }
