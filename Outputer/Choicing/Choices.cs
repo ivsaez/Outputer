@@ -35,9 +35,9 @@ namespace Outputer.Choicing
             options.Sort();
         }
 
-        public Choices With(string option, ChoiceFunction function)
+        public Choices With(string option, ChoiceFunction function, uint priority = 0)
         {
-            Add(option, function);
+            Add(option, function, priority);
             return this;
         }
 
