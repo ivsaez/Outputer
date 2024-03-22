@@ -7,6 +7,8 @@ namespace Outputer
     {
         protected readonly List<T> elements;
 
+        public bool Any => elements.Any();
+
         public StringableList()
         {
             elements = new List<T>();
@@ -14,6 +16,9 @@ namespace Outputer
 
         public override string ToString()
         {
+            if(!Any)
+                return string.Empty;
+
             var builder = new StringBuilder();
             foreach (var element in elements)
             {

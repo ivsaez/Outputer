@@ -4,6 +4,8 @@ namespace Outputer
 {
     public class Conversation : StringableList<ConversationLine>, IOutputable
     {
+        public bool IsEmpty => !Any;
+
         public Conversation()
             : base()
         {

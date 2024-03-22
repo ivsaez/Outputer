@@ -4,6 +4,8 @@ namespace Outputer
 {
     public class Output : EditableStringableList<IOutputable>
     {
+        public bool IsEmpty => !Any;
+
         public Output(params IOutputable[] outputables)
             : base(outputables)
         {
@@ -82,9 +84,11 @@ namespace Outputer
         public static Output FromSpeech(string speaker, string message)
         {
             if (string.IsNullOrWhiteSpace(speaker) || string.IsNullOrWhiteSpace(message))
-                return new Output();
+                return Empty;
 
             return new Output(new Conversation().With(speaker, message));
         }
+
+        public static Output Empty => new Output();
     }
 }

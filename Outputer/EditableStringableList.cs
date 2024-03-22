@@ -28,7 +28,7 @@
         {
             foreach (var element in list.elements)
             {
-                elements.Add(element);
+                Add(element);
             }
         }
 

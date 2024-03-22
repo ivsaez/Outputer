@@ -4,6 +4,8 @@ namespace Outputer
 {
     public class Pharagraph : EditableStringableList<string>, IOutputable
     {
+        public bool IsEmpty => !Any;
+
         public Pharagraph(params string[] texts)
             : base(texts)
         {
@@ -11,7 +13,8 @@ namespace Outputer
 
         public void Add(Pharagraph pharagraph)
         {
-            addAll(pharagraph);
+            if(pharagraph.Any)
+                addAll(pharagraph);
         }
 
         public void AddIf(Func<bool> condition, Pharagraph pharagraph)
