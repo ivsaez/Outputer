@@ -78,8 +78,8 @@ namespace Outputer
             if (string.IsNullOrWhiteSpace(speaker))
                 throw new ArgumentNullException(nameof(speaker));
 
-            if (!string.IsNullOrWhiteSpace(message))
-                throw new ArgumentNullException(nameof(speaker));
+            if (string.IsNullOrWhiteSpace(message))
+                throw new ArgumentNullException(nameof(message));
 
             Speaker = speaker;
             Message = message;
