@@ -9,6 +9,8 @@ namespace Outputer
 
         public bool Any => elements.Any();
 
+        public IEnumerable<T> All => elements;
+
         public StringableList()
         {
             elements = new List<T>();
@@ -16,7 +18,7 @@ namespace Outputer
 
         public override string ToString()
         {
-            if(!Any)
+            if (!Any)
                 return string.Empty;
 
             var builder = new StringBuilder();
